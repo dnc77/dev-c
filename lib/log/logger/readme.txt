@@ -49,6 +49,7 @@ How to use:
       lognormal
       logmore
       logfull
+8: Including logger.h should be done within 'extern "C" { } due to C++ name mangling not done in C.
 
 
 Thanks
