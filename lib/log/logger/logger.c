@@ -1,20 +1,46 @@
-// Date:    15 April 2014
-// Purpose: Provides generic log functionality.
-//
-// Version control
-// Date        Author         Summary
-// 15 Apr 2014 Duncan Camilleri  Initial development
-// 28 Oct 2016 Duncan Camilleri  Added comments to handle members
-// 28 Oct 2016 Duncan Camilleri  Added indentation functionality
-// 
-// 
+/*
+Date: 22 Mar 2019 22:38:36.548196414
+File: logger.c
+
+Copyright Notice
+This document is protected by the GNU General Public License v3.0.
+
+This allows for commercial use, modification, distribution, patent and private
+use of this software only when the GNU General Public License v3.0 and this
+copyright notice are both attached in their original form.
+
+For developer and author protection, the GPL clearly explains that there is no
+warranty for this free software and that any source code alterations are to be
+shown clearly to identify the original author as well as any subsequent changes
+made and by who.
+
+For any questions or ideas, please contact:
+github:  https://github(dot)com/dnc77
+email:   dnc77(at)hotmail(dot)com
+web:     http://www(dot)dnc77(dot)com
+
+Copyright (C) 2000-2019 Duncan Camilleri, All rights reserved.
+End of Copyright Notice
+
+Purpose: Provides generic log functionality.
+
+Version control
+15 Apr 2014 Duncan Camilleri           Initial development
+28 Oct 2016 Duncan Camilleri           Added comments to handle members
+28 Oct 2016 Duncan Camilleri           Added indentation functionality
+22 Mar 2019 Duncan Camilleri           Added copyright notice
+17 Oct 2020 Duncan Camilleri           Typecast missing
+11 Dec 2020 Duncan Camilleri           Added logHex
+12 Dec 2020 Duncan Camilleri           Added label to logHex
+*/
 
 #include <stdio.h>
 #include <malloc.h>
 #include <memory.h>
 #include <string.h>
 #include <stdarg.h>
-#include <logger.h>
+#include <ctype.h>
+#include "logger.h"
 
 //
 // STRUCTS
@@ -46,7 +72,7 @@ typedef struct {
 loghdl createLoggerHandle(const char* const filename, int level, int std)
 {
    // Allocate a log handle first.
-   loghandle* p = malloc(sizeof(loghandle));
+   loghandle* p = (loghandle*)malloc(sizeof(loghandle));
    if (!p) return 0;
 
    // Set input parameters first.
@@ -256,6 +282,82 @@ void logCri(loghdl h, int showLevel, const char* const fmt, ...)
    va_end(va);
 }
 
+void logHex(loghdl h, int showLevel, int bytesPerRow,
+            const char* const buf, const int size,
+            const char* const pLabel)
+{
+   const unsigned char* pStart = (const unsigned char* const)buf;
+   const unsigned char* const pEnd = pStart + size;
+   const unsigned char* pCur = pStart;
+
+   loghandle* p = (loghandle*)h;
+   if (!p || !buf || size <= 0) return;
+
+   // Are we within the level?
+   if (showLevel > p->mLevel) return;
+
+   // Reduce columns to nearest 8 byte.
+   if (bytesPerRow < 8) bytesPerRow = 8;
+   if (bytesPerRow > 8)
+      bytesPerRow = bytesPerRow - (bytesPerRow % 8);
+
+   // Print label.
+   if (pLabel) {
+      justlog(h, showLevel, "%s\n", pLabel);
+   }
+
+   // Print loop.
+   while (pCur < pEnd) {
+      int n = 0;
+      int nRemaining = 0;
+      char rowAddr[17];
+      char bytes[(const int) bytesPerRow + 1];
+      memset(rowAddr, 0, 17);
+      memset(bytes, 0, bytesPerRow + 1);
+
+      // Get memory address first...
+      sprintf(rowAddr, "%016x", pCur);
+      justlog(h, showLevel, "%s ", &rowAddr[11]);
+
+      // Indentation...
+      if (p->mEnableStd) {
+         logIndent(p, stdout);
+      }
+      if (p->mFile) {
+         logIndent(p, p->mFile);
+      }
+
+      // One row.
+      for (; n < bytesPerRow && pCur < pEnd; ++n, ++pCur) {
+         // eight byte separator
+         if (n > 0 && n % 8 == 0)
+            justlog(h, showLevel, " ");
+
+         // One line ascii buffer
+         bytes[n] = ((isprint(*pCur) && !isspace(*pCur)) ? *pCur : '.');
+
+         // Output hex bytes.
+         justlog(h, showLevel, "%02x ", pCur[0]);
+         fflush(0);
+      }
+
+      // Output spaces for bytes that have not been displayed.
+      nRemaining = bytesPerRow - n;
+      for (int n = 0; n < nRemaining; ++n) {
+         justlog(h, showLevel, "   ");
+      }
+
+      // Output spaces for 8 byte boundary spaces that were missed.
+      nRemaining = ((nRemaining / 8.00) + 1);
+      for (int n = 0; n < nRemaining; ++n) {
+         justlog(h, showLevel, " ");
+      }
+
+      // Output binary bytes.
+      justlog(h, showLevel, " %s\n", bytes);
+   }
+}
+
 // Indentation
 
 void logindent(loghdl h)
@@ -274,6 +376,3 @@ void logoutdent(loghdl h)
 
    p->mIndent--;
 }
-
-
-
