@@ -32,6 +32,7 @@ Version control
 17 Oct 2020 Duncan Camilleri           Typecast missing
 11 Dec 2020 Duncan Camilleri           Added logHex
 12 Dec 2020 Duncan Camilleri           Added label to logHex
+22 May 2022 Duncan Camilleri           Removed unnecessary fflush
 */
 
 #include <stdio.h>
@@ -338,7 +339,6 @@ void logHex(loghdl h, int showLevel, int bytesPerRow,
 
          // Output hex bytes.
          justlog(h, showLevel, "%02x ", pCur[0]);
-         fflush(0);
       }
 
       // Output spaces for bytes that have not been displayed.
