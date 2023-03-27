@@ -26,6 +26,7 @@ MKDIR                      := mkdir -p
 RMDIR                      := rm -Rf
 AR                         := ar
 GC                         := gcc
+STRIP                      := strip
 TOUCH                      := touch
 ECHO                       := echo
 VALGRIND                   := valgrind
@@ -67,10 +68,11 @@ TOPINC                     := inc
 
 # Top level categories
 # Top Level Folder followed by name of project category
+# Dev tools provide generic sofware development assists (DVT).
 LIBCAT_DEVTOOLS            := devtools
 
 # All projects (first six chars are top level folders/categories)
-LIBLOG_LOGGER              := logger
+LIBDVT_LOGGER              := logger
 
 #
 # Additional paths

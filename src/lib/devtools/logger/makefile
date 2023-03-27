@@ -9,7 +9,7 @@ MKPATH                     := $(shell dirname\
 include                    $(MKPATH)/../../../../makefile.def
 
 LIBCATEGORY                := $(LIBCAT_DEVTOOLS)
-PRJMAIN                    := $(LIBLOG_LOGGER)
+PRJMAIN                    := $(LIBDVT_LOGGER)
 
 # Project root path
 PRJROOTDIR                 := $(TOPSRCDIR)$(TOPLIB)/$(LIBCATEGORY)/$(PRJMAIN)/
@@ -19,15 +19,15 @@ INCDIR                     := $(TOPINCDIR)
 BINDIR                     := $(TOPBINDIR)
 LIBDIR                     := $(TOPLIBDIR)
 SRCDIR                     := $(PRJROOTDIR)
-OBJDIR                     := $(PRJROOTDIR)$(TOPOBJ)/
+OBJDIR                     := $(TOPOBJDIR)
 
 # Main output directories
 BINDIR_DBG64               := $(BINDIR)$(X64DEBUG)/
 BINDIR_REL64               := $(BINDIR)$(X64REL)/
 LIBDIR_DBG64               := $(LIBDIR)$(X64DEBUG)/
 LIBDIR_REL64               := $(LIBDIR)$(X64REL)/
-OBJDIR_DBG64               := $(OBJDIR)$(X64DEBUG)/
-OBJDIR_REL64               := $(OBJDIR)$(X64REL)/
+OBJDIR_DBG64               := $(OBJDIR)$(X64DEBUG)/$(PRJMAIN)/
+OBJDIR_REL64               := $(OBJDIR)$(X64REL)/$(PRJMAIN)/
 
 # Compilers and tools (uncomment to override makefile.def)
 # CD                         := cd
@@ -142,5 +142,6 @@ $(LOGGER_REL64) : $(LOGGERDEP_REL64) $(LOGGERINC) $(LOGGERSRC)
 	@$(ECHO) "rel: Compiling and linking to $@"
 	@$(GC) $(OBJGCCOPT_REL64) $(LOGGERSRC) $(LOGGERDEP_REL64)
 	@$(MV) *.o $(OBJDIR_REL64)
+	@$(STRIP) $(OBJDIR_REL64)*.o
 	@$(AR) rc $(LOGGER_REL64) $(OBJDIR_REL64)*.o
 
