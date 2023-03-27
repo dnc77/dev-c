@@ -40,6 +40,7 @@ Thank you.
 
 ### projects:
 * `src/lib/devtools/logger`   : a simple logger
+* `src/lib/devtools/testfaze` : a very basic test case utility
 
 ### Usage Notes:
 1. Use Makefiles to compile all libraries by going to `/src/lib` and running `make` from there.
