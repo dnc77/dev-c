@@ -62,8 +62,8 @@ LOGGERINC                  := $(LOGGER_INCDIR)logger.h
 LOGGERSRC                  := $(LOGGER_SRCDIR)logger.c
 
 # Project object files
-LOGGER_OBJ_DBG64           := $(OBJDIR_DBG64)$(LOGGER).o
-LOGGER_OBJ_REL64           := $(OBJDIR_REL64)$(LOGGER).o
+LOGGER_OBJ_DBG64           := $(OBJDIR_DBG64)$(PRJMAIN).o
+LOGGER_OBJ_REL64           := $(OBJDIR_REL64)$(PRJMAIN).o
 
 # Project library link options
 # Libraries:
