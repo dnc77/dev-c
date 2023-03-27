@@ -12,12 +12,13 @@ include $(MKPATH)../../makefile.def
 PRJROOTDIR                 := $(MKPATH)
 
 # All library directories
-LIBDTDIR                  := $(PRJROOTDIR)$(LIBCAT_DEVTOOLS)/
-LIBALLDIR                  := $(LIBDTDIR)
+LIBDVTDIR                  := $(PRJROOTDIR)$(LIBCAT_DEVTOOLS)/
+LIBALLDIR                  := $(LIBDVTDIR)
 
 # All make files
-LOGGERMAKE                 := $(LIBDTDIR)$(LIBLOG_LOGGER)/makefile
-ALLMAKE                    := $(LOGGERMAKE)
+LOGGERMAKE                 := $(LIBDVTDIR)$(LIBDVT_LOGGER)/makefile
+TESTFAZEMAKE               := $(LIBDVTDIR)$(LIBDVT_TESTFAZE)/makefile
+ALLMAKE                    := $(LOGGERMAKE) $(TESTFAZEMAKE)
 
 # Compilers and tools (uncomment to override makefile.def)
 # CD                         := cd

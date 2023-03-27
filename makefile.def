@@ -73,6 +73,7 @@ LIBCAT_DEVTOOLS            := devtools
 
 # All projects (first six chars are top level folders/categories)
 LIBDVT_LOGGER              := logger
+LIBDVT_TESTFAZE            := testfaze
 
 #
 # Additional paths
