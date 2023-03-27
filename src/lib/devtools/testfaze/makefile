@@ -130,14 +130,14 @@ clean : roottest
 memchk :
 	$(VALGRIND) $(VALGRINDOPTFULL) $(TESTFAZE_DBG64)
 
-# logger debug build
+# testfaze debug build
 $(TESTFAZE_DBG64) : $(TESTFAZEDEP_DBG64) $(TESTFAZEINC) $(TESTFAZESRC)
 	@$(ECHO) "dbg: Compiling and linking to $@"
 	@$(GC) $(OBJGCCOPT_DBG64) $(TESTFAZESRC) $(TESTFAZEDEP_DBG64)
 	@$(MV) *.o $(OBJDIR_DBG64)
 	@$(AR) rc $(TESTFAZE_DBG64) $(OBJDIR_DBG64)*.o
 
-# logger release build
+# testfaze release build
 $(TESTFAZE_REL64) : $(TESTFAZEDEP_REL64) $(TESTFAZEINC) $(TESTFAZESRC)
 	@$(ECHO) "rel: Compiling and linking to $@"
 	@$(GC) $(OBJGCCOPT_REL64) $(TESTFAZESRC) $(TESTFAZEDEP_REL64)
