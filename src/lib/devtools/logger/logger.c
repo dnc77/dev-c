@@ -33,6 +33,8 @@ Version control
 11 Dec 2020 Duncan Camilleri           Added logHex
 12 Dec 2020 Duncan Camilleri           Added label to logHex
 22 May 2022 Duncan Camilleri           Removed unnecessary fflush
+27 Mar 2023 Duncan Camilleri           <logger.h> from include path
+27 Mar 2023 Duncan Camilleri           logHex 0x%08x warning removed
 */
 
 #include <stdio.h>
@@ -41,7 +43,22 @@ Version control
 #include <string.h>
 #include <stdarg.h>
 #include <ctype.h>
-#include "logger.h"
+#include <logger.h>
+
+// Offset when to start displaying the address in logHex. When logging a memory
+// buffer, instead of displaying each line's full address, we display most
+// significant values.
+// 0x0000000020 hex data                        asc values
+// 0x0000000030 hex data                        asc values
+// 0x0000000040 hex data                        asc values
+// etc...
+// can instead be represented as:
+// 0020 hex data                        asc values
+// 0030 hex data                        asc values
+// 0040 hex data                        asc values
+// To disable this feature, just offset from 0 (set to 0).
+// We display from offset 3 for 32 bit or offset 7 otherwise.
+const int gAddrDisplay = (sizeof(void*) == 4) ? 3 : 7;
 
 //
 // STRUCTS
@@ -311,14 +328,14 @@ void logHex(loghdl h, int showLevel, int bytesPerRow,
    while (pCur < pEnd) {
       int n = 0;
       int nRemaining = 0;
-      char rowAddr[17];
+      char rowAddr[32];
       char bytes[(const int) bytesPerRow + 1];
-      memset(rowAddr, 0, 17);
+      memset(rowAddr, 0, 32);
       memset(bytes, 0, bytesPerRow + 1);
 
       // Get memory address first...
-      sprintf(rowAddr, "%016x", pCur);
-      justlog(h, showLevel, "%s ", &rowAddr[11]);
+      sprintf(rowAddr, "%p", pCur);
+      justlog(h, showLevel, "%s ", &rowAddr[gAddrDisplay]);
 
       // Indentation...
       if (p->mEnableStd) {
@@ -376,3 +393,17 @@ void logoutdent(loghdl h)
 
    p->mIndent--;
 }
+
+int main()
+{
+   // printf("%p %p: %d(%d)\n", &gAddrDisplay, 10, sizeof(void*), gAddrDisplay);
+   char* buffer = "abcdefghijklmnopqrstuvwxyz"
+      "abcdefghijklmnopqrstuvwxyz"
+      "abcdefghijklmnopqrstuvwxyz"
+      "abcdefghijklmnopqrstuvwxyz";
+   loghdl l = createLoggerHandle(0, lognormal, 1);
+   logHex(l, lognormal, 8, buffer, 105, "LABEL");
+   destroyLoggerHandle(&l);
+   return 0;
+}
+

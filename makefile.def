@@ -1,0 +1,85 @@
+# Global root definitions
+# History of changes:
+#
+# 27 Mar 2023              creation
+
+# Get root path
+GLOBALROOTDIR              := $(shell dirname\
+                                 $(realpath $(lastword $(MAKEFILE_LIST)))\
+                              )/
+
+
+#
+# Build configurations
+#
+
+X64DEBUG                   := x64dbg
+X64REL                     := x64rel
+
+#
+# Compilers and tools
+#
+
+CD                         := cd
+MV                         := mv
+MKDIR                      := mkdir -p
+RMDIR                      := rm -Rf
+AR                         := ar
+GC                         := gcc
+TOUCH                      := touch
+ECHO                       := echo
+VALGRIND                   := valgrind
+
+#
+# Compiler tool parameters
+#
+
+# Compiler flags
+GCCSTD98                   := -std=c++98
+GCCSTD11                   := -std=c++11
+GCCSTD14                   := -std=c++14
+GCCSTD17                   := -std=c++17
+GCCPIC                     := -fPIC
+GCCWARNALL                 := -Wall
+GCCNOFORMATWRN             := -Wformat=0
+GCCX32                     := -m32
+GCCX64                     := -m64
+GCCDEBUG                   := -g
+GCCCOMPILEONLY             := -c
+GCCOUTFILE                 := -o
+GCCLIB                     := -l
+GCCINCDIR                  := -I
+GCCLIBDIR                  := -L
+
+# Valgrind
+VALGRINDOPTFULL            := --leak-check=full --track-origins=yes \
+                              --track-fds=yes
+#
+# All projects
+#
+
+# Top level folders - type of files inside folder
+TOPLIB                     := lib
+TOPBIN                     := bin
+TOPOBJ                     := obj
+TOPSRC                     := src
+TOPINC                     := inc
+
+# Top level categories
+# Top Level Folder followed by name of project category
+LIBCAT_DEVTOOLS            := devtools
+
+# All projects (first six chars are top level folders/categories)
+LIBLOG_LOGGER              := logger
+
+#
+# Additional paths
+#
+
+# Full paths at top level
+TOPLIBDIR                  := $(GLOBALROOTDIR)$(TOPLIB)/
+TOPBINDIR                  := $(GLOBALROOTDIR)$(TOPBIN)/
+TOPOBJDIR                  := $(GLOBALROOTDIR)$(TOPOBJ)/
+TOPSRCDIR                  := $(GLOBALROOTDIR)$(TOPSRC)/
+TOPINCDIR                  := $(GLOBALROOTDIR)$(TOPINC)/
+
