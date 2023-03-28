@@ -37,17 +37,17 @@ Thank you.
 
 ### Top level categories:
 * `devtools`                  : general development assists
+* `datastruct`                : memory storage data structures
 
 ### projects:
 * `src/lib/devtools/logger`   : a simple logger
 * `src/lib/devtools/testfaze` : a very basic test case utility
+* `src/lib/datastruct/vector` : an implementation of a basic vector
 
 ### Usage Notes:
 1. Use Makefiles to compile all libraries by going to `/src/lib` and running `make` from there.
-
 
 ### Compilation Notes:
 *  This repository has been compiled and linked using the following 
    1. gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0
    2. GNU ld (GNU Binutils for Ubuntu) 2.34
-

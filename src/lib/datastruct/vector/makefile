@@ -1,7 +1,6 @@
 # History of changes:
 #
 # 27 Mar 2023              created
-# 28 Mar 2023              unstrip release library
 
 # Get global definitions makefile.
 MKPATH                     := $(shell dirname\
@@ -9,8 +8,8 @@ MKPATH                     := $(shell dirname\
                               )
 include                    $(MKPATH)/../../../../makefile.def
 
-LIBCATEGORY                := $(LIBCAT_DEVTOOLS)
-PRJMAIN                    := $(LIBDVT_TESTFAZE)
+LIBCATEGORY                := $(LIBCAT_DATASTRUCT)
+PRJMAIN                    := $(LIBDAT_VECTOR)
 
 # Project root path
 PRJROOTDIR                 := $(TOPSRCDIR)$(TOPLIB)/$(LIBCATEGORY)/$(PRJMAIN)/
@@ -51,44 +50,54 @@ OBJDIR_REL64               := $(OBJDIR)$(X64REL)/$(PRJMAIN)/
 # External libraries
 
 # Individual project include locations
-TESTFAZE_INCDIR            := $(INCDIR)$(LIBCATEGORY)/
+TESTFAZE_INCDIR            := $(INCDIR)$(LIBCAT_DEVTOOLS)/
+VECTOR_INCDIR              := $(INCDIR)$(LIBCATEGORY)/
 
 # Individual project source locations
-TESTFAZE_SRCDIR            := $(SRCDIR)
+VECTOR_SRCDIR              := $(SRCDIR)
 
 # Individual project include files
-TESTFAZEINC                := $(TESTFAZE_INCDIR)testfaze.h
+VECTORINC                  := $(VECTOR_INCDIR)vector.h
 
 # Individual project source files
-TESTFAZESRC                := $(TESTFAZE_SRCDIR)testfaze.c
+VECTORSRC                  := $(VECTOR_SRCDIR)vector.c
 
 # Project object files
-TESTFAZE_OBJ_DBG64         := $(OBJDIR_DBG64)$(PRJMAIN).o
-TESTFAZE_OBJ_REL64         := $(OBJDIR_REL64)$(PRJMAIN).o
+VECTOR_OBJ_DBG64           := $(OBJDIR_DBG64)$(PRJMAIN).o
+VECTOR_OBJ_REL64           := $(OBJDIR_REL64)$(PRJMAIN).o
 
 # Project library link options
 # Libraries:
 # m - math library
 # dl - dynamic loading library
-TESTFAZE_LNKLIB_DBG64      :=
-TESTFAZE_LNKLIB_REL64      :=
+VECTOR_LNKLIB_DBG64        := $(LIBDIR_DBG64)$(LIBDVT_TESTFAZE)
+VECTOR_LNKLIB_REL64        := $(LIBDIR_REL64)$(LIBDVT_TESTFAZE)
 
 # Project output files
-TESTFAZE_DBG64             := $(LIBDIR_DBG64)$(PRJMAIN).a
-TESTFAZE_REL64             := $(LIBDIR_REL64)$(PRJMAIN).a
+VECTOR_DBG64               := $(LIBDIR_DBG64)$(PRJMAIN).a
+VECTOR_REL64               := $(LIBDIR_REL64)$(PRJMAIN).a
+TESTS_DBG64                := $(LIBDIR_DBG64)$(TESTPREFIX)$(PRJMAIN).01
+TESTS_REL64                := $(LIBDIR_REL64)$(TESTPREFIX)$(PRJMAIN).01
 
 # Project dependencies
-TESTFAZEDEP_DBG64          := 
-TESTFAZEDEP_REL64          := 
+VECTORDEP_DBG64            := 
+VECTORDEP_REL64            := 
+TESTSDEP_DBG64             := $(LIBDIR_DBG64)/$(LIBDVT_TESTFAZE).a
+TESTSDEP_REL64             := $(LIBDIR_REL64)/$(LIBDVT_TESTFAZE).a
 
 # Individual project type compiler options
 OBJGCCOPT_DBG64            := $(GCCDEBUG) $(GCCCOMPILEONLY) $(GCCWARNALL) \
-                              $(GCCX64) $(GCCINCDIR)$(TESTFAZE_INCDIR)
-OBJGCCOPT_REL64            := $(GCCCOMPILEONLY) $(GCCWARNALL) \
-                              $(GCCX64) $(GCCINCDIR)$(TESTFAZE_INCDIR)
-BINGCCOPT_DBG64            := $(GCCDEBUG) $(GCCWARNALL) $(GCCX64) \
+                              $(GCCX64) $(GCCPIC)\
+                              $(GCCINCDIR)$(VECTOR_INCDIR) \
                               $(GCCINCDIR)$(TESTFAZE_INCDIR)
-BINGCCOPT_REL64            := $(GCCWARNALL) $(GCCX64) \
+OBJGCCOPT_REL64            := $(GCCCOMPILEONLY) $(GCCWARNALL) \
+                              $(GCCX64) $(GCCPIC) $(GCCINCDIR)$(VECTOR_INCDIR) \
+                              $(GCCINCDIR)$(TESTFAZE_INCDIR)
+BINGCCOPT_DBG64            := $(GCCDEBUG) $(GCCWARNALL) $(GCCX64) $(GCCPIC)\
+                              $(GCCINCDIR)$(VECTOR_INCDIR) \
+                              $(GCCINCDIR)$(TESTFAZE_INCDIR)
+BINGCCOPT_REL64            := $(GCCWARNALL) $(GCCX64) $(GCCPIC)\
+                              $(GCCINCDIR)$(VECTOR_INCDIR) \
                               $(GCCINCDIR)$(TESTFAZE_INCDIR)
 
 rules : roottest
@@ -119,29 +128,41 @@ mkreldirs : roottest
 # All builds
 all : dbg rel
 
-dbg : mkdbgdirs $(TESTFAZE_DBG64)
+dbg : mkdbgdirs $(VECTOR_DBG64) $(TESTS_DBG64)
 
-rel : mkreldirs $(TESTFAZE_REL64)
+rel : mkreldirs $(VECTOR_REL64) $(TESTS_REL64)
 
 clean : roottest
-	@$(RMDIR) $(TESTFAZE_DBG64)
-	@$(RMDIR) $(TESTFAZE_REL64)
+	@$(RMDIR) $(VECTOR_DBG64)
+	@$(RMDIR) $(VECTOR_REL64)
+	@$(RMDIR) $(TESTS_DBG64)
+	@$(RMDIR) $(TESTS_REL64)
 	@$(RMDIR) $(OBJDIR)
 
 memchk :
-	$(VALGRIND) $(VALGRINDOPTFULL) $(TESTFAZE_DBG64)
+	$(VALGRIND) $(VALGRINDOPTFULL) $(TESTS_DBG64)
 
-# testfaze debug build
-$(TESTFAZE_DBG64) : $(TESTFAZEDEP_DBG64) $(TESTFAZEINC) $(TESTFAZESRC)
+# vector debug build
+$(VECTOR_DBG64) : $(VECTORDEP_DBG64) $(VECTORINC) $(VECTORSRC)
 	@$(ECHO) "dbg: Compiling and linking to $@"
-	@$(GC) $(OBJGCCOPT_DBG64) $(TESTFAZESRC) $(TESTFAZEDEP_DBG64)
+	@$(GC) $(OBJGCCOPT_DBG64) $(VECTORSRC) $(VECTORDEP_DBG64)
 	@$(MV) *.o $(OBJDIR_DBG64)
-	@$(AR) rc $(TESTFAZE_DBG64) $(OBJDIR_DBG64)*.o
+	@$(AR) rc $(VECTOR_DBG64) $(OBJDIR_DBG64)*.o
 
-# testfaze release build
-$(TESTFAZE_REL64) : $(TESTFAZEDEP_REL64) $(TESTFAZEINC) $(TESTFAZESRC)
+# vector release build
+$(VECTOR_REL64) : $(VECTORDEP_REL64) $(VECTORINC) $(VECTORSRC)
 	@$(ECHO) "rel: Compiling and linking to $@"
-	@$(GC) $(OBJGCCOPT_REL64) $(TESTFAZESRC) $(TESTFAZEDEP_REL64)
+	@$(GC) $(OBJGCCOPT_REL64) $(VECTORSRC) $(VECTORDEP_REL64)
 	@$(MV) *.o $(OBJDIR_REL64)
-	@$(AR) rc $(TESTFAZE_REL64) $(OBJDIR_REL64)*.o
+	@$(AR) rc $(VECTOR_REL64) $(OBJDIR_REL64)*.o
 
+# tests debug build
+$(TESTS_DBG64) : $(TESTSDEP_DBG64) $(VECTORINC) $(VECTORSRC)
+	@$(ECHO) "dbg: Compiling and linking to $@"
+	@$(GC) $(BINGCCOPT_DBG64) $(VECTORSRC) $(TESTSDEP_DBG64) $(GCCOUTFILE)$@
+
+# tests release build
+$(TESTS_REL64) : $(TESTSDEP_REL64) $(VECTORINC) $(VECTORSRC)
+	@$(ECHO) "rel: Compiling and linking to $@"
+	@$(GC) $(BINGCCOPT_REL64) $(VECTORSRC) $(TESTSDEP_REL64) $(GCCOUTFILE)$@
+	@$(STRIP) $@

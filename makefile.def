@@ -2,6 +2,8 @@
 # History of changes:
 #
 # 27 Mar 2023              creation
+# 28 Mar 2023              data structure vector introduced
+# 28 Mar 2023              TESTPREFIX for test binaries
 
 # Get root path
 GLOBALROOTDIR              := $(shell dirname\
@@ -69,11 +71,14 @@ TOPINC                     := inc
 # Top level categories
 # Top Level Folder followed by name of project category
 # Dev tools provide generic sofware development assists (DVT).
+# Data structure provides accessibility to in memory storage algorithms (DAT).
 LIBCAT_DEVTOOLS            := devtools
+LIBCAT_DATASTRUCT          := datastruct
 
 # All projects (first six chars are top level folders/categories)
 LIBDVT_LOGGER              := logger
 LIBDVT_TESTFAZE            := testfaze
+LIBDAT_VECTOR              := vector
 
 #
 # Additional paths
@@ -86,3 +91,8 @@ TOPOBJDIR                  := $(GLOBALROOTDIR)$(TOPOBJ)/
 TOPSRCDIR                  := $(GLOBALROOTDIR)$(TOPSRC)/
 TOPINCDIR                  := $(GLOBALROOTDIR)$(TOPINC)/
 
+#
+# Filename specifics
+#
+
+TESTPREFIX                 := _test.

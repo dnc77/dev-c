@@ -1,6 +1,7 @@
 # History of changes:
 #
 # 27 Mar 2023              created
+# 28 Mar 2023              added VECTORMAKE and LIBDATDIR
 
 # Get global definitions makefile.
 MKPATH                     := $(shell dirname\
@@ -13,12 +14,14 @@ PRJROOTDIR                 := $(MKPATH)
 
 # All library directories
 LIBDVTDIR                  := $(PRJROOTDIR)$(LIBCAT_DEVTOOLS)/
+LIBDATDIR                  := $(PRJROOTDIR)$(LIBCAT_DATASTRUCT)/
 LIBALLDIR                  := $(LIBDVTDIR)
 
 # All make files
 LOGGERMAKE                 := $(LIBDVTDIR)$(LIBDVT_LOGGER)/makefile
 TESTFAZEMAKE               := $(LIBDVTDIR)$(LIBDVT_TESTFAZE)/makefile
-ALLMAKE                    := $(LOGGERMAKE) $(TESTFAZEMAKE)
+VECTORMAKE                 := $(LIBDATDIR)$(LIBDAT_VECTOR)/makefile
+ALLMAKE                    := $(LOGGERMAKE) $(TESTFAZEMAKE) $(VECTORMAKE)
 
 # Compilers and tools (uncomment to override makefile.def)
 # CD                         := cd
