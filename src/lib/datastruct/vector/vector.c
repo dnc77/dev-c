@@ -28,6 +28,7 @@ Purpose: Implements a vector api.
 Version control
 06 Feb 2023 Duncan Camilleri           Initial development
 21 Mar 2023 Duncan Camilleri           extendBuffer() newItemCount increment fix
+29 Mar 2023 Duncan Camilleri           cvreturn and nul to commons.h (retcode)
 */
 
 //
@@ -36,13 +37,14 @@ Version control
 #include <inttypes.h>
 #include <memory.h>
 #include <malloc.h>
+
+#include <commons.h>
 #include <testfaze.h>
 #include <vector.h>
 
 //
 // MACROS
 //
-#define nul                                  ((void*)0)
 #define VECTOR_DEFAULT_ALLOCUNITS            8
 
 //
@@ -106,7 +108,7 @@ void cvdestroy(cvector* pv)
 // extend is used by extendBuffer to extend by the number of items specified
 // the memory buffer allocated for data in the vector. This will be rounded to
 // the default number of allocation units of the vector.
-cvreturn extend(vector* pv, uint32_t byItemCount)
+retcode extend(vector* pv, uint32_t byItemCount)
 {
    uint32_t newSize = (pv->mTotalCount + byItemCount) * pv->mItemSize;
    void* pBuf = realloc(pv->mpData, newSize);
@@ -130,7 +132,7 @@ cvreturn extend(vector* pv, uint32_t byItemCount)
 // mItemsPerAlloc chunks (using %).
 // If the number of items requested is already a factor that's manageable by the
 // vector, nothing will be allocated and everything stays as is.
-cvreturn extendBuffer(vector* pv, uint32_t newItemCount)
+retcode extendBuffer(vector* pv, uint32_t newItemCount)
 {
    // Add a new set of blank items to the end of the vector buffer.
    if (newItemCount == 0) {
@@ -175,7 +177,7 @@ uint32_t cvGetSize(ccvector cv)
 // hold that amount of items. If there is no space to store such items, it
 // is allocated ensuring rounding is as per vector's items per allocation
 // value.
-cvreturn cvReserve(cvector v, uint32_t itemCount)
+retcode cvReserve(cvector v, uint32_t itemCount)
 {
    // Access vector.
    vector* pv = (vector*)v;

@@ -27,10 +27,19 @@ Purpose: Implements a vector api.
 
 Version control
 06 Feb 2023 Duncan Camilleri           Initial development
+29 Mar 2023 Duncan Camilleri           Moved cvreturn to commons.h
+
 */
 
 #ifndef __VECTOR_H_75B4DE9E8D0BE655A21DFEEB367A2322__
 #define __VECTOR_H_75B4DE9E8D0BE655A21DFEEB367A2322__
+
+//
+// MISSING INCLUDES.
+//
+#if !defined __COMMONS_H_2224725FD5DAE2AC90D80099D5A003C5__
+#error "vector.h: missing include - commons.h"
+#endif
 
 //
 // MACROS
@@ -48,10 +57,6 @@ typedef void* cvector;                             // vector
 typedef void* cvitem;                              // vector item
 typedef const void* ccvector;                      // const vector
 typedef const void* ccvitem;                       // const vector item
-typedef enum {
-   cvfail = 0x00,
-   cvsuccess = 0x01
-} cvreturn;
 
 //
 // VECTOR API
@@ -64,7 +69,7 @@ void cvdestroy(cvector* pv);                       // destroy existing vector
 // Item management - public api.
 uint32_t cvGetCount(ccvector cv);                  // return item count
 uint32_t cvGetSize(ccvector cv);                   // return total items
-cvreturn cvReserve(cvector v, uint32_t itemCount); // total itemCount items
+retcode cvReserve(cvector v, uint32_t itemCount);  // total itemCount items
 void* cvPushBack(cvector v, cvitem item);          // add to the end
 void cvPopBack(cvector v);                         // remove & return last item
 void cvClear(cvector v);                           // empty the vector
