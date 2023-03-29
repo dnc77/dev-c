@@ -28,6 +28,7 @@ Purpose: Common structures/macros useful across multiple projects.
 Version control
 29 Mar 2023 Duncan Camilleri           Initial development
 30 Mar 2023 Duncan Camilleri           Function pointer types: comparator
+30 Mar 2023 Duncan Camilleri           Introduced boolean types
 */
 
 #ifndef __COMMONS_H_2224725FD5DAE2AC90D80099D5A003C5__
@@ -45,6 +46,9 @@ Version control
 //
 #define nul                                  ((void*)0)
 #define null                                 nul
+#define bool                                 uint8_t
+#define true                                 1
+#define false                                0
 
 //
 // Generic structures.
