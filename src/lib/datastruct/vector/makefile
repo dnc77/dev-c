@@ -1,6 +1,7 @@
 # History of changes:
 #
 # 27 Mar 2023              created
+# 30 Mar 2023              vector now depends on commons.h
 
 # Get global definitions makefile.
 MKPATH                     := $(shell dirname\
@@ -50,14 +51,17 @@ OBJDIR_REL64               := $(OBJDIR)$(X64REL)/$(PRJMAIN)/
 # External libraries
 
 # Individual project include locations
-TESTFAZE_INCDIR            := $(INCDIR)$(LIBCAT_DEVTOOLS)/
-VECTOR_INCDIR              := $(INCDIR)$(LIBCATEGORY)/
+DEVTOOLS_INCDIR            := $(INCDIR)$(LIBCAT_DEVTOOLS)/
+DATASTRUCT_INCDIR          := $(INCDIR)$(LIBCAT_DATASTRUCT)/
+TESTFAZE_INCDIR            := $(DEVTOOLS_INCDIR)
+VECTOR_INCDIR              := $(DATASTRUCT_INCDIR)
 
 # Individual project source locations
 VECTOR_SRCDIR              := $(SRCDIR)
 
 # Individual project include files
-VECTORINC                  := $(VECTOR_INCDIR)vector.h
+VECTORINC                  := $(VECTOR_INCDIR)vector.h\
+                              $(DEVTOOLS_INCDIR)commons.h
 
 # Individual project source files
 VECTORSRC                  := $(VECTOR_SRCDIR)vector.c
