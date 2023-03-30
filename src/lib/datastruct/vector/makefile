@@ -3,6 +3,7 @@
 # 27 Mar 2023              created
 # 30 Mar 2023              vector now depends on commons.h
 # 30 Mar 2023              pulled out tests from vector.c
+# 30 Mar 2023              added memory leak test info
 
 # Get global definitions makefile.
 MKPATH                     := $(shell dirname\
@@ -112,6 +113,7 @@ rules : roottest
 	@$(ECHO) '   all:    all projects (debug and release)'
 	@$(ECHO) '   dbg:    all the debug projects'
 	@$(ECHO) '   rel:    all the release projects'
+	@$(ECHO) '   memchk: run a memory leak test on the tests'
 	@$(ECHO) '   clean:  remove all'
 	@$(ECHO) ""
 
