@@ -2,6 +2,7 @@
 #
 # 27 Mar 2023              created
 # 30 Mar 2023              vector now depends on commons.h
+# 30 Mar 2023              pulled out tests from vector.c
 
 # Get global definitions makefile.
 MKPATH                     := $(shell dirname\
@@ -65,6 +66,7 @@ VECTORINC                  := $(VECTOR_INCDIR)vector.h\
 
 # Individual project source files
 VECTORSRC                  := $(VECTOR_SRCDIR)vector.c
+TESTSSRC                   := $(VECTOR_SRCDIR)test.c
 
 # Project object files
 VECTOR_OBJ_DBG64           := $(OBJDIR_DBG64)$(PRJMAIN).o
@@ -86,8 +88,10 @@ TESTS_REL64                := $(LIBDIR_REL64)$(TESTPREFIX)$(PRJMAIN).01
 # Project dependencies
 VECTORDEP_DBG64            := 
 VECTORDEP_REL64            := 
-TESTSDEP_DBG64             := $(LIBDIR_DBG64)/$(LIBDVT_TESTFAZE).a
-TESTSDEP_REL64             := $(LIBDIR_REL64)/$(LIBDVT_TESTFAZE).a
+TESTSDEP_DBG64             := $(LIBDIR_DBG64)/$(LIBDVT_TESTFAZE).a \
+                              $(VECTOR_DBG64)
+TESTSDEP_REL64             := $(LIBDIR_REL64)/$(LIBDVT_TESTFAZE).a \
+                              $(VECTOR_REL64)
 
 # Individual project type compiler options
 OBJGCCOPT_DBG64            := $(GCCDEBUG) $(GCCCOMPILEONLY) $(GCCWARNALL) \
@@ -163,10 +167,10 @@ $(VECTOR_REL64) : $(VECTORDEP_REL64) $(VECTORINC) $(VECTORSRC)
 # tests debug build
 $(TESTS_DBG64) : $(TESTSDEP_DBG64) $(VECTORINC) $(VECTORSRC)
 	@$(ECHO) "dbg: Compiling and linking to $@"
-	@$(GC) $(BINGCCOPT_DBG64) $(VECTORSRC) $(TESTSDEP_DBG64) $(GCCOUTFILE)$@
+	@$(GC) $(BINGCCOPT_DBG64) $(TESTSSRC) $(TESTSDEP_DBG64) $(GCCOUTFILE)$@
 
 # tests release build
 $(TESTS_REL64) : $(TESTSDEP_REL64) $(VECTORINC) $(VECTORSRC)
 	@$(ECHO) "rel: Compiling and linking to $@"
-	@$(GC) $(BINGCCOPT_REL64) $(VECTORSRC) $(TESTSDEP_REL64) $(GCCOUTFILE)$@
+	@$(GC) $(BINGCCOPT_REL64) $(TESTSSRC) $(TESTSDEP_REL64) $(GCCOUTFILE)$@
 	@$(STRIP) $@
