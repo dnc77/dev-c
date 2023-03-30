@@ -29,6 +29,8 @@ Version control
 06 Feb 2023 Duncan Camilleri           Initial development
 21 Mar 2023 Duncan Camilleri           extendBuffer() newItemCount increment fix
 29 Mar 2023 Duncan Camilleri           cvreturn and nul to commons.h (retcode)
+30 Mar 2023 Duncan Camilleri           testfaze using bool commons type
+
 */
 
 //
@@ -310,23 +312,23 @@ void* cvSetAt(cvector v, uint32_t index, cvitem item)
 //
 
 // Tests creation and destruction of a vector.
-uint8_t testCreate(TFSuite pTest)
+bool testCreate(TFSuite pTest)
 {
    // Create the vector.
    cvector cv = cvcreate(sizeof(int));
-   if (!cv) return tfzFalse;
+   if (!cv) return false;
 
    // Destroy it and ensure that nothing is left...
    cvdestroy(&cv);
-   return tfzassert_ptr(pTest, cv, 0, tfzFalse);
+   return tfzassert_ptr(pTest, cv, 0, false);
 }
 
 // Tests the expansion of vector items when adding items beyond end...
-uint8_t testBufferGrowth(TFSuite pTest)
+bool testBufferGrowth(TFSuite pTest)
 {
    // Create the vector.
    cvector cv = cvcreate(sizeof(int));
-   if (!cv) return tfzFalse;
+   if (!cv) return false;
 
    // Add items to the vector.
    for (int n = 0; n < VECTOR_DEFAULT_ALLOCUNITS; ++n) {
@@ -336,11 +338,11 @@ uint8_t testBufferGrowth(TFSuite pTest)
    // Ensure correct current total (VECTOR_DEFAULT_ALLOCUNITS).
    uint32_t currentTotal = cvGetSize(cv);
    uint32_t currentItems = cvGetCount(cv);
-   if (tfzFalse == tfzassert_ui32(
-      pTest, currentTotal, VECTOR_DEFAULT_ALLOCUNITS, tfzFalse)
+   if (false == tfzassert_ui32(
+      pTest, currentTotal, VECTOR_DEFAULT_ALLOCUNITS, false)
    ) {
       cvdestroy(&cv);
-      return tfzFalse;
+      return false;
    }
 
    // Adding an extra item should extend the buffer.
@@ -348,41 +350,41 @@ uint8_t testBufferGrowth(TFSuite pTest)
    uint32_t* pNewItem = cvPushBack(cv, makecvitem(newItem));
 
    // Ensure item being added is the item being returned (confirm it's added).
-   if (tfzFalse ==
-      tfzassert_ui32(pTest, *pNewItem, VECTOR_DEFAULT_ALLOCUNITS + 1, tfzFalse)
+   if (false ==
+      tfzassert_ui32(pTest, *pNewItem, VECTOR_DEFAULT_ALLOCUNITS + 1, false)
    ) {
       cvdestroy(&cv);
-      return tfzFalse;
+      return false;
    }
 
    // Ensure totals match up as well.
    currentTotal = cvGetSize(cv);
    currentItems = cvGetCount(cv);
-   if (tfzFalse == tfzassert_ui32(pTest, currentTotal,
-      VECTOR_DEFAULT_ALLOCUNITS * 2, tfzFalse)
+   if (false == tfzassert_ui32(pTest, currentTotal,
+      VECTOR_DEFAULT_ALLOCUNITS * 2, false)
    ) {
       cvdestroy(&cv);
-      return tfzFalse;
+      return false;
    }
 
-   if (tfzFalse == tfzassert_ui32(pTest, currentItems,
-      VECTOR_DEFAULT_ALLOCUNITS + 1, tfzFalse)
+   if (false == tfzassert_ui32(pTest, currentItems,
+      VECTOR_DEFAULT_ALLOCUNITS + 1, false)
    ) {
       cvdestroy(&cv);
-      return tfzFalse;
+      return false;
    }
 
    // Success.
    cvdestroy(&cv);
-   return tfzTrue;
+   return true;
 }
 
 // Test shrinking of vector.
-uint8_t testShrink(TFSuite pTest)
+bool testShrink(TFSuite pTest)
 {
    // Create the vector.
    cvector cv = cvcreate(sizeof(int));
-   if (!cv) return tfzFalse;
+   if (!cv) return false;
 
    // Add items to the vector - ensure there is space.
    for (int n = 0; n < 20; ++n) {
@@ -391,26 +393,26 @@ uint8_t testShrink(TFSuite pTest)
 
    // Ensure all items are created and total space is in line with our
    // expectations.
-   if (tfzFalse == tfzassert_ui32(pTest, cvGetCount(cv), 20, tfzFalse)) {
+   if (false == tfzassert_ui32(pTest, cvGetCount(cv), 20, false)) {
       cvdestroy(&cv);
-      return tfzFalse;
+      return false;
    }
-   if (tfzFalse == tfzassert_ui32(pTest, cvGetSize(cv),
-         20 + (20 % VECTOR_DEFAULT_ALLOCUNITS), tfzFalse)) {
+   if (false == tfzassert_ui32(pTest, cvGetSize(cv),
+         20 + (20 % VECTOR_DEFAULT_ALLOCUNITS), false)) {
       cvdestroy(&cv);
-      return tfzFalse;
+      return false;
    }
 
    // Shrink. Ensure shrink will shrink with modulo of alloc units.
    cvShrink(cv);
-   if (tfzFalse == tfzassert_ui32(pTest, cvGetCount(cv), 20, tfzFalse)) {
+   if (false == tfzassert_ui32(pTest, cvGetCount(cv), 20, false)) {
       cvdestroy(&cv);
-      return tfzFalse;
+      return false;
    }
-   if (tfzFalse == tfzassert_ui32(pTest, cvGetSize(cv),
-         20 + (20 % VECTOR_DEFAULT_ALLOCUNITS), tfzFalse)) {
+   if (false == tfzassert_ui32(pTest, cvGetSize(cv),
+         20 + (20 % VECTOR_DEFAULT_ALLOCUNITS), false)) {
       cvdestroy(&cv);
-      return tfzFalse;
+      return false;
    }
 
    // Pop all items and shrink.
@@ -419,26 +421,26 @@ uint8_t testShrink(TFSuite pTest)
    }
 
    // Ensure all vector container elements present but empty/unused.
-   if (tfzFalse == tfzassert_ui32(pTest, cvGetCount(cv), 0, tfzFalse)) {
+   if (false == tfzassert_ui32(pTest, cvGetCount(cv), 0, false)) {
       cvdestroy(&cv);
-      return tfzFalse;
+      return false;
    }
-   if (tfzFalse == tfzassert_ui32(pTest, cvGetSize(cv),
-         20 + (20 % VECTOR_DEFAULT_ALLOCUNITS), tfzFalse)) {
+   if (false == tfzassert_ui32(pTest, cvGetSize(cv),
+         20 + (20 % VECTOR_DEFAULT_ALLOCUNITS), false)) {
       cvdestroy(&cv);
-      return tfzFalse;
+      return false;
    }
 
    // Shrink and check that no utilized space remains... TODO::
    cvShrink(cv);
-   if (tfzFalse == tfzassert_ui32(pTest, cvGetSize(cv), 0, tfzFalse)) {
+   if (false == tfzassert_ui32(pTest, cvGetSize(cv), 0, false)) {
       cvdestroy(&cv);
-      return tfzFalse;
+      return false;
    }
 
    // Success.
    cvdestroy(&cv);
-   return tfzTrue;
+   return true;
 }
 
 void runTests()

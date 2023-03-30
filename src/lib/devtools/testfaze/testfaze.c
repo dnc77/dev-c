@@ -27,6 +27,8 @@ Purpose: testfaze is a very simple c test case library.
 
 Version control
 07 Feb 2023 Duncan Camilleri           Initial development
+30 Mar 2023 Duncan Camilleri           Use commons bool 'type'
+30 Mar 2023 Duncan Camilleri           Deprecated string assert in favour of buf
 */
 
 #include <stdio.h>
@@ -34,6 +36,7 @@ Version control
 #include <memory.h>
 #include <string.h>
 #include <inttypes.h>
+#include <commons.h>
 #include "testfaze.h"
 
 //
@@ -51,10 +54,6 @@ typedef struct _testsuite {
 //
 // GLOBALS
 //
-
-// Test Faze
-const uint8_t tfzTrue = 1;
-const uint8_t tfzFalse = 0;
 
 //
 // INTERNALS
@@ -103,7 +102,7 @@ void tfzToMetric(TestFaze* pTest, uint8_t success)
    pTest->mTotal++;
 
    // When the test was successful, nothing further needs to be done. 
-   if (success == tfzTrue) return;
+   if (success == true) return;
 
    // Record failed test.
    pTest->mFailed++;
@@ -135,12 +134,12 @@ void tfzShowResults(TFSuite suite)
 //    suite:      the test suite
 //    res:        result
 //    exp:        expected result
-//    noMetric:   tfzTrue to not add to metric calculation
-uint8_t tfzassert_ui8(TFSuite suite,
+//    noMetric:   true to not add to metric calculation
+bool tfzassert_ui8(TFSuite suite,
    uint8_t res, uint8_t exp, uint8_t noMetric)
 {
    // Determine success.
-   uint8_t success = ((res == exp ) ? tfzTrue : tfzFalse);
+   bool success = ((res == exp ) ? true : false);
    if (noMetric) return success;
 
    // Add result to metrics.
@@ -153,12 +152,12 @@ uint8_t tfzassert_ui8(TFSuite suite,
 //    suite:      the test suite
 //    res:        result
 //    exp:        expected result
-//    noMetric:   tfzTrue to not add to metric calculation
-uint8_t tfzassert_ui16(TFSuite suite,
+//    noMetric:   true to not add to metric calculation
+bool tfzassert_ui16(TFSuite suite,
    uint16_t res, uint16_t exp, uint8_t noMetric)
 {
    // Determine success.
-   uint8_t success = ((res == exp ) ? tfzTrue : tfzFalse);
+   bool success = ((res == exp ) ? true : false);
    if (noMetric) return success;
 
    // Add result to metrics.
@@ -171,12 +170,12 @@ uint8_t tfzassert_ui16(TFSuite suite,
 //    suite:      the test suite
 //    res:        result
 //    exp:        expected result
-//    noMetric:   tfzTrue to not add to metric calculation
+//    noMetric:   true to not add to metric calculation
 uint8_t tfzassert_ui32(TFSuite suite,
    uint32_t res, uint32_t exp, uint8_t noMetric)
 {
    // Determine success.
-   uint8_t success = ((res == exp ) ? tfzTrue : tfzFalse);
+   uint8_t success = ((res == exp ) ? true : false);
    if (noMetric) return success;
 
    // Add result to metrics.
@@ -189,12 +188,12 @@ uint8_t tfzassert_ui32(TFSuite suite,
 //    suite:      the test suite
 //    res:        result
 //    exp:        expected result
-//    noMetric:   tfzTrue to not add to metric calculation
-uint8_t tfzassert_ptr(TFSuite suite,
+//    noMetric:   true to not add to metric calculation
+bool tfzassert_ptr(TFSuite suite,
    void* res, void* exp, uint8_t noMetric)
 {
    // Determine success.
-   uint8_t success = ((res == exp ) ? tfzTrue : tfzFalse);
+   uint8_t success = ((res == exp ) ? true : false);
    if (noMetric) return success;
 
    // Add result to metrics.
@@ -203,24 +202,27 @@ uint8_t tfzassert_ptr(TFSuite suite,
 }
 
 // Performs a test on a string buffer. Not taking into account string length
-// and accepting any length. Security red flag - to visit again! (TODO).
+// and accepting any length. Security red flag - to visit again!
 // Parameters: 
 //    suite:      the test suite
 //    res:        result
 //    exp:        expected result
-//    noMetric:   tfzTrue to not add to metric calculation
-uint8_t tfzassert_str(TFSuite suite,
+//    noMetric:   true to not add to metric calculation
+// TODO: Deprecated: use tszassert_buf instead.
+#if 0
+bool tfzassert_str(TFSuite suite,
    const char* const res, const char* const exp, uint8_t noMetric)
 {
    // Determine success.
-   uint8_t success = tfzTrue;
-   if (strcmp(res, exp) != 0) success = tfzFalse;
+   uint8_t success = true;
+   if (strcmp(res, exp) != 0) success = false;
    if (noMetric) return success;
 
    // Add result to metrics.
    tfzToMetric((TestFaze*)suite, success);
    return success;
 }
+#endif
 
 // Performs a test on a binary buffer.
 // Parameters: 
@@ -229,20 +231,20 @@ uint8_t tfzassert_str(TFSuite suite,
 //    resSize:    size of result buffer
 //    exp:        expected result
 //    expSize:    size of expected result buffer
-//    noMetric:   tfzTrue to not add to metric calculation
-uint8_t tfzassert_buf(TFSuite suite,
+//    noMetric:   true to not add to metric calculation
+bool tfzassert_buf(TFSuite suite,
    const void* const res, uint32_t resSize,
    const void* const exp, uint32_t expSize,
    uint8_t noMetric)
 {
-   uint8_t success = tfzTrue;
+   uint8_t success = true;
 
    // First compare lengths.
-   if (resSize != expSize) success = tfzFalse;
+   if (resSize != expSize) success = false;
 
    // Determine success.
-   if (tfzTrue == success && memcmp(res, exp, resSize) != 0)
-      success = tfzFalse;
+   if (true == success && memcmp(res, exp, resSize) != 0)
+      success = false;
    if (noMetric) return success;
 
    // Add result to metrics.

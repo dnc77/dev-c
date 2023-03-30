@@ -27,6 +27,7 @@ Purpose:
 
 Version control
 07 Feb 2023 Duncan Camilleri           Initial development
+30 Mar 2023 Duncan Camilleri           Use commons bool 'type'
 */
 
 #ifndef __TESTFAZE_H_98A3BB4CC58CB174077E14BC6AA65023__
@@ -35,15 +36,9 @@ Version control
 // Missing includes.
 #ifndef _INTTYPES_H
 #error "testfaze.h requires inttypes.h."
+#elif !defined __COMMONS_H_2224725FD5DAE2AC90D80099D5A003C5__
+#error "testfaze.h requires commons.h."
 #endif
-
-//
-// GLOBALS
-//
-
-// An 8 bit integer will be used to determine true (1) or false (0).
-extern const uint8_t tfzTrue;
-extern const uint8_t tfzFalse;
 
 //
 // TYPES
@@ -81,20 +76,20 @@ void tfzShowResults(TFSuite suite);
 //                   choice.
 //
 
-uint8_t tfzassert_ui8(TFSuite suite,
+bool tfzassert_ui8(TFSuite suite,
    uint8_t res, uint8_t exp, uint8_t noMetric);
-uint8_t tfzassert_ui16(TFSuite suite,
+bool tfzassert_ui16(TFSuite suite,
    uint16_t res, uint16_t exp, uint8_t noMetric);
-uint8_t tfzassert_ui32(TFSuite suite,
+bool tfzassert_ui32(TFSuite suite,
    uint32_t res, uint32_t exp, uint8_t noMetric);
-uint8_t tfzassert_ptr(TFSuite suite,
+bool tfzassert_ptr(TFSuite suite,
    void* res, void* exp, uint8_t noMetric);
-uint8_t tfzassert_str(TFSuite suite,
-   const char* const res, const char* const exp, uint8_t noMetric);
-uint8_t tfzassert_buf(TFSuite suite,
+// TODO: Deprecated. Use tfzassert_buf instead.
+// bool tfzassert_str(TFSuite suite,
+//    const char* const res, const char* const exp, uint8_t noMetric);
+bool tfzassert_buf(TFSuite suite,
    const void* const res, uint32_t resSize,
    const void* const exp, uint32_t expSize,
    uint8_t noMetric);
 
 #endif   // __TESTFAZE_H_98A3BB4CC58CB174077E14BC6AA65023__
-

@@ -2,6 +2,7 @@
 #
 # 27 Mar 2023              created
 # 28 Mar 2023              unstrip release library
+# 30 Mar 2023              testfaze now depends on commons.h
 
 # Get global definitions makefile.
 MKPATH                     := $(shell dirname\
@@ -51,13 +52,17 @@ OBJDIR_REL64               := $(OBJDIR)$(X64REL)/$(PRJMAIN)/
 # External libraries
 
 # Individual project include locations
+DEVTOOLS_INCDIR            := $(INCDIR)$(LIBCAT_DEVTOOLS)/
+DATASTRUCT_INCDIR          := $(INCDIR)$(LIBCAT_DATASTRUCT)/
 TESTFAZE_INCDIR            := $(INCDIR)$(LIBCATEGORY)/
+VECTOR_INCDIR              := $(DATASTRUCT_INCDIR)
 
 # Individual project source locations
 TESTFAZE_SRCDIR            := $(SRCDIR)
 
 # Individual project include files
-TESTFAZEINC                := $(TESTFAZE_INCDIR)testfaze.h
+TESTFAZEINC                := $(TESTFAZE_INCDIR)testfaze.h \
+                              $(DEVTOOLS_INCDIR)commons.h
 
 # Individual project source files
 TESTFAZESRC                := $(TESTFAZE_SRCDIR)testfaze.c
