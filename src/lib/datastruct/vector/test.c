@@ -27,10 +27,12 @@ Purpose: Tests for vector.c.
 
 Version control
 30 Mar 2023 Duncan Camilleri           Initial development
+31 Mar 2023 Duncan Camilleri           Added cvEmplaceBack tests
 */
 
 #include <stdio.h>
 #include <inttypes.h>
+#include <memory.h>
 #include <commons.h>
 #include <testfaze.h>
 #include <vector.h>
@@ -51,7 +53,9 @@ bool testCreate(TFSuite pTest)
 {
    // Create the vector.
    cvector cv = cvcreate(sizeof(int));
-   if (!cv) return false;
+   if (false == tfzassert(pTest, cv != null, true, false)) {
+      return false;
+   }
 
    // Destroy it and ensure that nothing is left...
    cvdestroy(&cv);
@@ -62,11 +66,32 @@ bool testCreate(TFSuite pTest)
 bool testBufferGrowth(TFSuite pTest)
 {
    // Create the vector.
-   cvector cv = cvcreate(sizeof(int));
-   if (!cv) return false;
+   cvector cv = cvcreate(sizeof(uint32_t));
+   if (false == tfzassert(pTest, cv != null, true, false)) {
+      return false;
+   }
+
+   // Test emplace back.
+   uint32_t firstItem = 22;
+   uint32_t itemSize = 0;
+   uint32_t* pFirstItem = (uint32_t*)cvEmplaceBack(cv, &itemSize);
+   if (false == tfzassert(pTest, pFirstItem != null, true, false)) {
+      return false;
+   }
+
+   // Ensure an item is added.
+   if (false == tfzassert_ui32(pTest, cvGetCount(cv), 1, false)) {
+      cvdestroy(&cv);
+      return false;
+   }
+
+   // Validate values and item size!
+   tfzassert_ui32(pTest, itemSize, sizeof(uint32_t), false);
+   memcpy(pFirstItem, &firstItem, itemSize);
+   tfzassert_ui32(pTest, *pFirstItem, firstItem, false);
 
    // Add items to the vector.
-   for (int n = 0; n < VECTOR_DEFAULT_ALLOCUNITS; ++n) {
+   for (uint32_t n = 1; n < VECTOR_DEFAULT_ALLOCUNITS; ++n) {
       cvPushBack(cv, makecvitem(n));
    }
 
@@ -82,7 +107,7 @@ bool testBufferGrowth(TFSuite pTest)
 
    // Adding an extra item should extend the buffer.
    uint32_t newItem = VECTOR_DEFAULT_ALLOCUNITS + 1;
-   uint32_t* pNewItem = cvPushBack(cv, makecvitem(newItem));
+   uint32_t* pNewItem = (uint32_t*)cvPushBack(cv, makecvitem(newItem));
 
    // Ensure item being added is the item being returned (confirm it's added).
    if (false ==
@@ -119,7 +144,9 @@ bool testShrink(TFSuite pTest)
 {
    // Create the vector.
    cvector cv = cvcreate(sizeof(int));
-   if (!cv) return false;
+   if (false == tfzassert(pTest, cv != null, true, false)) {
+      return false;
+   }
 
    // Add items to the vector - ensure there is space.
    for (int n = 0; n < 20; ++n) {

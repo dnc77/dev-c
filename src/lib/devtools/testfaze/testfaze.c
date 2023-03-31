@@ -29,6 +29,7 @@ Version control
 07 Feb 2023 Duncan Camilleri           Initial development
 30 Mar 2023 Duncan Camilleri           Use commons bool 'type'
 30 Mar 2023 Duncan Camilleri           Deprecated string assert in favour of buf
+31 Mar 2023 Duncan Camilleri           Introduced bool basic assert
 */
 
 #include <stdio.h>
@@ -128,6 +129,23 @@ void tfzShowResults(TFSuite suite)
 //
 // ASSERTIONS
 //
+
+// Performs a test on a boolean.
+// Parameters: 
+//    suite:      the test suite
+//    res:        result
+//    exp:        expected result
+//    noMetric:   true to not add to metric calculation
+bool tfzassert(TFSuite suite, bool res, bool exp, uint8_t noMetric)
+{
+   // Determine success.
+   bool success = ((res == exp ) ? true : false);
+   if (noMetric) return success;
+
+   // Add result to metrics.
+   tfzToMetric((TestFaze*)suite, success);
+   return success;
+}
 
 // Performs a test on an unsigned 8 bit integer.
 // Parameters: 

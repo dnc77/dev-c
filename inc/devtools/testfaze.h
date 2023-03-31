@@ -28,6 +28,7 @@ Purpose:
 Version control
 07 Feb 2023 Duncan Camilleri           Initial development
 30 Mar 2023 Duncan Camilleri           Use commons bool 'type'
+31 Mar 2023 Duncan Camilleri           Introduced most basic assert (bool)
 */
 
 #ifndef __TESTFAZE_H_98A3BB4CC58CB174077E14BC6AA65023__
@@ -76,6 +77,7 @@ void tfzShowResults(TFSuite suite);
 //                   choice.
 //
 
+bool tfzassert(TFSuite suite, bool res, bool exp, uint8_t noMetric);
 bool tfzassert_ui8(TFSuite suite,
    uint8_t res, uint8_t exp, uint8_t noMetric);
 bool tfzassert_ui16(TFSuite suite,
