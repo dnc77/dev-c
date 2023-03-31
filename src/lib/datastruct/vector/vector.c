@@ -33,8 +33,9 @@ Version control
 30 Mar 2023 Duncan Camilleri           tests pulled out from library source
 31 Mar 2023 Duncan Camilleri           Introduced cvEmplaceBack
 31 Mar 2023 Duncan Camilleri           cvPushBack fail return correct to null
-31 Mar 2023 Duncan Camilleri           renamed return codes to exclude cv prefix
+31 Mar 2023 Duncan Camilleri           Renamed return codes to exclude cv prefix
 31 Mar 2023 Duncan Camilleri           cvEmplaceBack() did not update item count
+31 Mar 2023 Duncan Camilleri           Fixed cvShrink realloc() misuse
 */
 
 //
@@ -288,6 +289,9 @@ void cvShrink(cvector v)
    if (newTotal > 0) {
       void* pBuf = realloc(pv->mpData, newTotal * pv->mItemSize);
       if (!pBuf) return;
+
+      // Set buffer.
+      pv->mpData = pBuf;
    } else {
       free(pv->mpData);
       pv->mpData = nul;

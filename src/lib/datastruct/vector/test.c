@@ -28,6 +28,7 @@ Purpose: Tests for vector.c.
 Version control
 30 Mar 2023 Duncan Camilleri           Initial development
 31 Mar 2023 Duncan Camilleri           Added cvEmplaceBack tests
+31 Mar 2023 Duncan Camilleri           testBufferGrowth() cleaned up
 */
 
 #include <stdio.h>
@@ -71,68 +72,47 @@ bool testBufferGrowth(TFSuite pTest)
       return false;
    }
 
-   // Test emplace back.
-   uint32_t firstItem = 22;
-   uint32_t itemSize = 0;
-   uint32_t* pFirstItem = (uint32_t*)cvEmplaceBack(cv, &itemSize);
-   if (false == tfzassert(pTest, pFirstItem != null, true, false)) {
-      return false;
-   }
-
-   // Ensure an item is added.
-   if (false == tfzassert_ui32(pTest, cvGetCount(cv), 1, false)) {
-      cvdestroy(&cv);
-      return false;
-   }
-
-   // Validate values and item size!
-   tfzassert_ui32(pTest, itemSize, sizeof(uint32_t), false);
-   memcpy(pFirstItem, &firstItem, itemSize);
-   tfzassert_ui32(pTest, *pFirstItem, firstItem, false);
-
    // Add items to the vector.
-   for (uint32_t n = 1; n < VECTOR_DEFAULT_ALLOCUNITS; ++n) {
-      cvPushBack(cv, makecvitem(n));
+   for (uint32_t n = 0; n < VECTOR_DEFAULT_ALLOCUNITS; ++n) {
+      // Emplace odd numbers, push even numbers to test both functions.
+      bool emplace = ((n % 2) != 0);
+      uint32_t itemSize = 0;
+      uint32_t* pReturn = 0;
+
+      // Emplace or push back to test both functions.
+      if (emplace) {
+         pReturn = (uint32_t*)cvEmplaceBack(cv, &itemSize);
+
+         // Ensure correct item size is returned.
+         tfzassert_ui32(pTest, itemSize, sizeof(uint32_t), false);
+         // Fill emplaced item.
+         memcpy(pReturn, &n, itemSize);
+      } else {
+         pReturn = (uint32_t*)cvPushBack(cv, makecvitem(n));
+      }
+      
+      // Ensure an item is added.
+      tfzassert_ui32(pTest, cvGetCount(cv), n + 1, false);
+      // Ensure correct item is added.
+      tfzassert_ui32(pTest, *pReturn, n, false);
    }
 
    // Ensure correct current total (VECTOR_DEFAULT_ALLOCUNITS).
    uint32_t currentTotal = cvGetSize(cv);
-   uint32_t currentItems = cvGetCount(cv);
-   if (false == tfzassert_ui32(
-      pTest, currentTotal, VECTOR_DEFAULT_ALLOCUNITS, false)
-   ) {
-      cvdestroy(&cv);
-      return false;
-   }
+   tfzassert_ui32(pTest, currentTotal, VECTOR_DEFAULT_ALLOCUNITS, false);
 
    // Adding an extra item should extend the buffer.
    uint32_t newItem = VECTOR_DEFAULT_ALLOCUNITS + 1;
    uint32_t* pNewItem = (uint32_t*)cvPushBack(cv, makecvitem(newItem));
 
    // Ensure item being added is the item being returned (confirm it's added).
-   if (false ==
-      tfzassert_ui32(pTest, *pNewItem, VECTOR_DEFAULT_ALLOCUNITS + 1, false)
-   ) {
-      cvdestroy(&cv);
-      return false;
-   }
+   tfzassert_ui32(pTest, *pNewItem, VECTOR_DEFAULT_ALLOCUNITS + 1, false);
 
    // Ensure totals match up as well.
    currentTotal = cvGetSize(cv);
-   currentItems = cvGetCount(cv);
-   if (false == tfzassert_ui32(pTest, currentTotal,
-      VECTOR_DEFAULT_ALLOCUNITS * 2, false)
-   ) {
-      cvdestroy(&cv);
-      return false;
-   }
-
-   if (false == tfzassert_ui32(pTest, currentItems,
-      VECTOR_DEFAULT_ALLOCUNITS + 1, false)
-   ) {
-      cvdestroy(&cv);
-      return false;
-   }
+   uint32_t currentItems = cvGetCount(cv);
+   tfzassert_ui32(pTest, currentTotal, VECTOR_DEFAULT_ALLOCUNITS * 2, false);
+   tfzassert_ui32(pTest, currentItems, VECTOR_DEFAULT_ALLOCUNITS + 1, false);
 
    // Success.
    cvdestroy(&cv);
