@@ -29,6 +29,8 @@ Version control
 29 Mar 2023 Duncan Camilleri           Initial development
 30 Mar 2023 Duncan Camilleri           Function pointer types: comparator
 30 Mar 2023 Duncan Camilleri           Introduced boolean types
+30 Mar 2023 Duncan Camilleri           Introduced assigner function pointer type
+31 Mar 2023 Duncan Camilleri           Renamed retcode values without cv prefix
 */
 
 #ifndef __COMMONS_H_2224725FD5DAE2AC90D80099D5A003C5__
@@ -56,19 +58,27 @@ Version control
 
 // Generic return code.
 typedef enum {
-   cvfail = 0x00,
-   cvsuccess = 0x01
+   fail = 0x00,
+   success = 0x01
 } retcode;
 
 //
 // Useful function pointer types
 //
+// comparator(a, b)                          compares a with b and gives result
+// assigner(a, b)                            assign b to a and gives a
+
 // Comparator function to compare a with b.
 // Expected return values:
 //    -1:   a < b
 //    1:    a > b
 //    0:    a == b
 typedef int8_t (*comparator)(void* a, void* b);
+
+// Assignment (operator) function to assign b to a. This behaves like a copy
+// operation to copy b to a.
+// Returns back a (pointer).
+typedef void* (*assigner)(void* a, void* b);
 
 #endif   // __COMMONS_H_2224725FD5DAE2AC90D80099D5A003C5__
 

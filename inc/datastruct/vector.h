@@ -28,6 +28,7 @@ Purpose: Implements a vector api.
 Version control
 06 Feb 2023 Duncan Camilleri           Initial development
 29 Mar 2023 Duncan Camilleri           Moved cvreturn to commons.h
+31 Mar 2023 Duncan Camilleri           Introduced cvEmplaceBack
 
 */
 
@@ -70,6 +71,7 @@ void cvdestroy(cvector* pv);                       // destroy existing vector
 uint32_t cvGetCount(ccvector cv);                  // return item count
 uint32_t cvGetSize(ccvector cv);                   // return total items
 retcode cvReserve(cvector v, uint32_t itemCount);  // total itemCount items
+void* cvEmplaceBack(cvector v, uint32_t* pSize);   // creates item at end
 void* cvPushBack(cvector v, cvitem item);          // add to the end
 void cvPopBack(cvector v);                         // remove & return last item
 void cvClear(cvector v);                           // empty the vector

@@ -31,6 +31,9 @@ Version control
 29 Mar 2023 Duncan Camilleri           cvreturn and nul to commons.h (retcode)
 30 Mar 2023 Duncan Camilleri           testfaze using bool commons type
 30 Mar 2023 Duncan Camilleri           tests pulled out from library source
+31 Mar 2023 Duncan Camilleri           Introduced cvEmplaceBack
+31 Mar 2023 Duncan Camilleri           cvPushBack fail return correct to null
+31 Mar 2023 Duncan Camilleri           renamed return codes to exclude cv prefix
 
 */
 
@@ -114,7 +117,7 @@ retcode extend(vector* pv, uint32_t byItemCount)
 {
    uint32_t newSize = (pv->mTotalCount + byItemCount) * pv->mItemSize;
    void* pBuf = realloc(pv->mpData, newSize);
-   if (!pBuf) return cvfail;
+   if (!pBuf) return fail;
 
    // Clean up and update data.
    pv->mpData = pBuf;
@@ -124,7 +127,7 @@ retcode extend(vector* pv, uint32_t byItemCount)
    pv->mTotalCount += byItemCount;
 
    // Done.
-   return cvsuccess;
+   return success;
 }
 
 // extendBuffer extends the buffer to ensure newItemCount items can be stored in
@@ -139,7 +142,7 @@ retcode extendBuffer(vector* pv, uint32_t newItemCount)
    // Add a new set of blank items to the end of the vector buffer.
    if (newItemCount == 0) {
       if (pv->mTotalCount > pv->mItemCount)
-         return cvsuccess;
+         return success;
 
       return extend(pv, pv->mItemsPerAlloc);
    }
@@ -147,7 +150,7 @@ retcode extendBuffer(vector* pv, uint32_t newItemCount)
    // Specific item count specified. Do not do anything if the item count
    // requested is already containable within the vector.
    if (newItemCount <= pv->mTotalCount) {
-      return cvsuccess;
+      return success;
    }
 
    // We need to allocate more items.
@@ -183,9 +186,30 @@ retcode cvReserve(cvector v, uint32_t itemCount)
 {
    // Access vector.
    vector* pv = (vector*)v;
-   if (!pv) return cvfail;
+   if (!pv) return fail;
 
    return extendBuffer(pv, itemCount);
+}
+
+// Creates item at end and returns location of item. Will return null if it
+// fails! Caller expected to fill item up to the size defined originally.
+// This will be provided in pSize.
+void* cvEmplaceBack(cvector v, uint32_t* pSize)
+{
+   // Access vector.
+   vector* pv = (vector*)v;
+   if (!pv) return null;
+   
+   // Allocate space if need be.
+   if (fail == extendBuffer(pv, pv->mItemCount + 1))
+      return null;
+
+   // Provide the size (if user asks for it).
+   if (pSize) *pSize = pv->mItemSize;
+
+   // Return the empty item.
+   void* dest = (pv->mpData + (pv->mItemCount * pv->mItemSize));
+   return dest;
 }
 
 // Adds an item after the last item added. Returns a pointer to the item.
@@ -193,13 +217,13 @@ void* cvPushBack(cvector v, cvitem item)
 {
    // Access vector.
    vector* pv = (vector*)v;
-   if (!pv) return cvfail;
+   if (!pv) return null;
    // ...and item.
-   if (!item) return cvfail;
+   if (!item) return null;
 
    // Allocate space if need be.
-   if (cvfail == extendBuffer(pv, pv->mItemCount + 1))
-      return cvfail;
+   if (fail == extendBuffer(pv, pv->mItemCount + 1))
+      return null;
 
    // Copy the item.
    void* dest = (pv->mpData + (pv->mItemCount * pv->mItemSize));
