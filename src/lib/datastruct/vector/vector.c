@@ -34,7 +34,7 @@ Version control
 31 Mar 2023 Duncan Camilleri           Introduced cvEmplaceBack
 31 Mar 2023 Duncan Camilleri           cvPushBack fail return correct to null
 31 Mar 2023 Duncan Camilleri           renamed return codes to exclude cv prefix
-
+31 Mar 2023 Duncan Camilleri           cvEmplaceBack() did not update item count
 */
 
 //
@@ -208,6 +208,7 @@ void* cvEmplaceBack(cvector v, uint32_t* pSize)
    if (pSize) *pSize = pv->mItemSize;
 
    // Return the empty item.
+   pv->mItemCount++;
    void* dest = (pv->mpData + (pv->mItemCount * pv->mItemSize));
    return dest;
 }
