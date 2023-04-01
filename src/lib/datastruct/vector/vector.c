@@ -36,6 +36,7 @@ Version control
 31 Mar 2023 Duncan Camilleri           Renamed return codes to exclude cv prefix
 31 Mar 2023 Duncan Camilleri           cvEmplaceBack() did not update item count
 31 Mar 2023 Duncan Camilleri           Fixed cvShrink realloc() misuse
+02 Apr 2023 Duncan Camilleri           Fixed cvEmplaceBack() returning bad addr
 */
 
 //
@@ -200,7 +201,7 @@ void* cvEmplaceBack(cvector v, uint32_t* pSize)
    // Access vector.
    vector* pv = (vector*)v;
    if (!pv) return null;
-   
+
    // Allocate space if need be.
    if (fail == extendBuffer(pv, pv->mItemCount + 1))
       return null;
@@ -209,8 +210,8 @@ void* cvEmplaceBack(cvector v, uint32_t* pSize)
    if (pSize) *pSize = pv->mItemSize;
 
    // Return the empty item.
-   pv->mItemCount++;
    void* dest = (pv->mpData + (pv->mItemCount * pv->mItemSize));
+   pv->mItemCount++;
    return dest;
 }
 
