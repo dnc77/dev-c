@@ -31,18 +31,24 @@ Please always maintain copyright attribution and version information in case of 
 Thank you.
 
 ### Top level folders:
-* `inc`                       : definitions (include files)
-* `src`                       : source files
-* `lib`                       : compiled libraries (post compilation only)
+* `inc`                          : definitions (include files)
+* `src`                          : source files
+* `lib`                          : compiled libraries (post compilation only)
 
 ### Top level categories:
-* `devtools`                  : general development assists
-* `datastruct`                : memory storage data structures
+* `devtools`                     : general development assists
+* `datastruct`                   : memory storage data structures
 
 ### projects:
-* `src/lib/devtools/logger`   : a simple logger
-* `src/lib/devtools/testfaze` : a very basic test case utility
-* `src/lib/datastruct/vector` : an implementation of a basic vector
+* `src/lib/devtools/logger`      : a simple logger
+* `src/lib/devtools/testfaze`    : a very basic test case utility
+* `src/lib/datastruct/vector`    : an implementation of a basic vector
+* `src/lib/datastruct/contmemlst`: data in a contiguous block of memory
+
+#### `contmemlist`
+
+There are times where multiple items of data of varying size need to be stored in a contiguous block of memory. Thinking of a linked list with data items of varying sizes all stored in the same memory block. This is such a list.
+
 
 ### Usage Notes:
 1. Use Makefiles to compile all libraries by going to `/src/lib` and running `make` from there.

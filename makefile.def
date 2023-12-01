@@ -78,6 +78,7 @@ LIBCAT_DATASTRUCT          := datastruct
 # All projects (first six chars are top level folders/categories)
 LIBDVT_LOGGER              := logger
 LIBDVT_TESTFAZE            := testfaze
+LIBDAT_CONTMEMLIST         := contmemlist
 LIBDAT_VECTOR              := vector
 
 #
