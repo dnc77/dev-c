@@ -20,8 +20,10 @@ LIBALLDIR                  := $(LIBDVTDIR)
 # All make files
 LOGGERMAKE                 := $(LIBDVTDIR)$(LIBDVT_LOGGER)/makefile
 TESTFAZEMAKE               := $(LIBDVTDIR)$(LIBDVT_TESTFAZE)/makefile
+CONTMEMLISTMAKE            := $(LIBDATDIR)$(LIBDAT_CONTMEMLIST)/makefile
 VECTORMAKE                 := $(LIBDATDIR)$(LIBDAT_VECTOR)/makefile
-ALLMAKE                    := $(LOGGERMAKE) $(TESTFAZEMAKE) $(VECTORMAKE)
+ALLMAKE                    := $(LOGGERMAKE) $(TESTFAZEMAKE) \
+                              $(CONTMEMLISTMAKE) $(VECTORMAKE) 
 
 # Compilers and tools (uncomment to override makefile.def)
 # CD                         := cd

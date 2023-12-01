@@ -42,8 +42,8 @@ Thank you.
 ### projects:
 * `src/lib/devtools/logger`      : a simple logger
 * `src/lib/devtools/testfaze`    : a very basic test case utility
-* `src/lib/datastruct/vector`    : an implementation of a basic vector
 * `src/lib/datastruct/contmemlst`: data in a contiguous block of memory
+* `src/lib/datastruct/vector`    : an implementation of a basic vector
 
 #### `contmemlist`
 
